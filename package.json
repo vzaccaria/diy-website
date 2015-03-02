@@ -1,0 +1,25 @@
+{
+  "name": "diy-website",
+  "version": "1.0.0",
+  "description": "Website for diy",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vittorio Zaccaria",
+  "license": "ISC",
+  "dependencies": {
+    "babel": "^4.6.5",
+    "beml-cli": "0.0.2",
+    "bootstrap": "^3.3.2",
+    "browserify": "^9.0.3",
+    "jade": "^1.9.2",
+    "liveify": "^2.0.0",
+    "node-lessify": "0.0.9-b",
+    "pm2": "^0.12.6",
+    "uid": "0.0.2"
+  }
+}

@@ -1,24 +1,187 @@
+mixin feature(title, icon, text)
+  .section__feature(block='feature')
+    div(elem='content')
+      span(elem='icon', class='glyphicon glyphicon-#{icon}')
+      div(elem='title') #{title}
+      div(elem='text') #{text}
+      
 doctype html
 html
-	head(lang="en")
-		title TITLE
-		meta(http-equiv="content-type", content="text/html; charset=UTF-8")
-		meta(name="description", content="")
-		meta(name="keywords", content="")
-		meta(name="viewport", content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;")
-		// if lt IE 9
-			script(type="text/javascript", src="js/html5shiv.js")
-	body
-		header
-			h1(block='hero') Example header
-		.container
+  head(lang="en")
+    title TITLE
+    meta(http-equiv="content-type", content="text/html; charset=UTF-8")
+    meta(name="description", content="")
+    meta(name="keywords", content="")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;")
+    script(type="text/javascript", src="client.js")
+    // if lt IE 9
+      script(type="text/javascript", src="js/html5shiv.js")
+  body
+    div(block='main-page')
+      div(block='section', mod='role:main')
+        div(elem='page-title') Diy
+        div(elem='page-subtitle') Javascript that compiles to a Makefile
+        div(elem='paragraph', mod='role:action')
+          :markdown
+            # install 
+            
+            ```shell
+            npm install diy 
+            ```
+            
+        div(elem='hr')
 
-		footer
+      div(block='section')
+        div(elem='paragraph', mod='width:large')
+          h1 features
+        +feature('build systems dsl',                          'pencil',     'Diy is a DSL to generate makefiles for your web site or web app.')
+        +feature('parallel builds',                            'tasks',      'Diy allows to intuitively specify dependencies among targets, enabling Make to exploit available parallelism.')
+        +feature('incremental builds',                         'forward',    'The generated dependency tree allows incremental builds, i.e., compile only what has changed.')
+        +feature('"do it yourself" customization',             'wrench',     'Specify directly how build tools should be invoked on the command line.')
+        +feature('library of processing steps for your files', 'briefcase',  'Diy comes with a library of processing steps already baked in.')
+          
+      
+      div(block='section')
+        div(elem='hr')
+        div(elem='paragraph', mod='width:large')
+            :markdown
+              # example - ES6
+              ## concatenate and minify javascript files
 
-		script(type="text/javascript", src="client.js")
+              Assume you have two files (`src/file1.js` and `src/file2.js`) that you want to 
+              concatenate and minify into a single `_site/client.js` file. Here's how you'd
+              write a Diy program for this task:
+            
+              ## diy source file
+              
+              ```js
+              /* configure.js */
+              
+              var {
+                generateProject
+              } = require("diy");
 
-		script(type="text/javascript").
-			document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js"></' + 'script>')
+              generateProject(_ => {
+                _.collect("all", _ => {
+                  _.toFile( "_site/client.js", _ => {
+                    _.minify( _ => {
+                      _.concat( _ => {
+                        _.copy("src/*.js")
+                      })
+                    })
+                  })
+                })
+              })
+              ```
+              
+              ## description
+              
+              Everything starts with the `generateProject` library function. You invoke it with 
+              a closure that describes the final makefile **targets** (using `_.collect`). A target is just a name
+              you give to a set of products you want to build. 
+                          
+              `_.toFile` creates a named file whose contents are created as described by the closure passed as second parameter. 
+              The closure (as it can be intuitively understood) minifies the concatenation of a copy of javascript files in `src/*.js`.
+                
+            
+                
+              To generate the makefile we use babel to get ES5:
+              
+              ```bash
+              babel configure.js | node
+              ```
+              
+              And here's the [generated makefile](demo/makefile).
+              
+              The makefile comes with two default targets (`prepare` and `clean`) plus all the targets defined with `collect`:
+              
+              ```bash
+              > make prepare      # Creates destination directories
+              > make clean        # Removes all products
+              > make all          # Execute commands associated with `all`
+              ```
+              
+              Make provides a way to specify the maximum parallelism to be used for building targets:
+              
+              ```bash
+              > make all -j 8     # Build all, execute up to 8 concurrent commands. 
+              ```
+              
+              
+              
+              # customization
+              
+              What about your favorite css/js preprocessor and other minifiers?
+              
+              Here's how you would define a new processing step to compile javascript with a
+              bunch of browserify plugins: 
 
-		// if IE
-			script(type="text/javascript", src="js/placeholder.js")
+              ```js
+              _.browserify = (src, ...deps) => {
+                var command = (_) => `./node_modules/.bin/browserify -t liveify -t node-lessify  ${_.source} -o ${_.product}`
+                var product = (_) => `${_.source.replace(/\..*/, '.bfd.js')}`
+                _.compileFiles(...([ command, product, src ].concat(deps)))
+              }
+              ```
+              
+              `_.compileFiles` is a built in function to easily construct new processing steps. Its first
+              two parameters are two templates: 
+              
+              1. a function to build the command line 
+              2. a function to build the product name
+              
+              The remaining parameters are `src` (glob for the source files) and the source dependencies.
+              
+              ```js
+              generateProject(_ => {
+
+                _.browserify = (dir, ...deps) => {
+                  var command = (_) => `./node_modules/.bin/browserify -t liveify -t node-lessify  ${_.source} -o ${_.product}`
+                  var product = (_) => `${_.source.replace(/\..*/, '.bfd.js')}`
+                  _.compileFiles(...([ command, product, dir ].concat(deps)))
+                }
+
+                _.collect("all", _ => {
+                  _.toFile( "_site/client.js", _ => {
+                      _.browserify("src/index.ls", "src/**/*.less", "src/**/*.ls")
+                  })
+                })
+              }
+              ```
+              
+              # serving and livereloading
+              
+              Serving static files from a directory and livereloading upon a change of a product is supported through `pm2` and `tiny-lr`. We can
+              create two make targets (`start` and `stop`) that take care of starting and stopping both services:
+              
+              ```js
+              generateProject(_ => { 
+              
+                  /* ... */
+              
+                _.collect("start", _ => {
+                  _.startWatch("_site/**/*")
+                  _.startServe("_site")
+                })
+                
+                _.collect("stop", _ => {
+                  _.stopWatch()
+                  _.stopServe()
+                })
+                
+                  /* ... */
+              })
+              ```
+              
+              `_.startWatch(glob)` is a built-in step that launches a tiny-lr instance that triggers a reload upon change on files matching the glob. 
+              `_.startServe(root,port)` serves files from the specified root and port.
+
+  
+    footer
+
+
+    script(type="text/javascript").
+      document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js"></' + 'script>')
+
+    // if IE
+      script(type="text/javascript", src="js/placeholder.js")

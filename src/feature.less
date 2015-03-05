@@ -1,0 +1,39 @@
+@import  (reference) "./less/bootstrap.less";
+@import  (reference) "./less/grid.less";
+@import  "./less/glyphicons.less";
+
+.feature {
+  .box-sizing(border-box);
+  height: 12rem;
+  .make-sm-column(4);
+
+  &__content {
+    .make-row();
+    .box-sizing(border-box);
+  }
+
+  &__icon {
+    .make-xs-column-offset(1);
+    .make-xs-column(3);
+    .box-sizing(border-box);
+    text-align: center;
+    font-size: 3rem;
+    color: #34495e;
+  }
+
+  &__title {
+    .make-xs-column(7);
+    .box-sizing(border-box);
+    text-align: left;
+    font-variant: small-caps;
+    font-weight: 100;
+    font-size: 1.3rem;
+  }
+
+  &__text {
+    .box-sizing(border-box);
+    .make-xs-column(12);
+    font-size: 1.1rem;
+    padding-top: 1rem;
+  }
+}

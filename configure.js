@@ -8,7 +8,7 @@ var uid = require('uid')
 generateProject(_ => {
 
   _.browserify = (dir, ...deps) => {
-    var command = (_) => `./node_modules/.bin/browserify -t liveify -t node-lessify ${_.source} -o ${_.product}`
+    var command = (_) => `./node_modules/.bin/browserify -t liveify -t node-lessify  ${_.source} -o ${_.product}`
     var product = (_) => `${_.source.replace(/\..*/, '.bfd.js')}`
     _.compileFiles(...([ command, product, dir ].concat(deps)))
   }
@@ -33,10 +33,17 @@ generateProject(_ => {
       })
     })
 
+    _.mirrorTo("_site/fonts", { strip: 'src/fonts/' }, _ => {
+      _.copy("src/fonts/*.{eot,woff,woff2,ttf,svg}")
+    })
+
+    _.mirrorTo("_site/demo", { strip: 'example/' }, _ => {
+      _.copy("example/configure.js")
+      _.copy("example/makefile")
+    })
+
     _.toFile( "_site/client.js", _ => {
-      _.minify( _ => {
-        _.browserify("src/index.ls", "src/less/*.less", "src/**/*.ls")
-      })
+        _.browserify("src/index.ls", "src/**/*.less", "src/**/*.ls")
     })
   })
 

@@ -1,0 +1,101 @@
+<!DOCTYPE html><html><head lang="en"><title>TITLE</title><meta http-equiv="content-type" content="text/html; charset=UTF-8"><meta name="description" content=""><meta name="keywords" content=""><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"><script type="text/javascript" src="client.js"></script><!-- if lt IE 9script(type="text/javascript", src="js/html5shiv.js")--></head><body><div block="main-page"><div block="section" mod="role:main"><div elem="page-title">Diy</div><div elem="page-subtitle">Javascript that compiles to a Makefile</div><div elem="paragraph" mod="role:action"><h1 id="install">install</h1>
+<pre><code class="lang-shell">npm install diy
+</code></pre>
+</div><div elem="hr"></div></div><div block="section"><div elem="paragraph" mod="width:large"><h1>features</h1></div><div block="feature" class="section__feature"><div elem="content"><span elem="icon" class="glyphicon glyphicon-pencil"></span><div elem="title">build systems dsl</div><div elem="text">Diy is a DSL to generate makefiles for your web site or web app.</div></div></div><div block="feature" class="section__feature"><div elem="content"><span elem="icon" class="glyphicon glyphicon-tasks"></span><div elem="title">parallel builds</div><div elem="text">Diy allows to intuitively specify dependencies among targets, enabling Make to exploit available parallelism.</div></div></div><div block="feature" class="section__feature"><div elem="content"><span elem="icon" class="glyphicon glyphicon-forward"></span><div elem="title">incremental builds</div><div elem="text">The generated dependency tree allows incremental builds, i.e., compile only what has changed.</div></div></div><div block="feature" class="section__feature"><div elem="content"><span elem="icon" class="glyphicon glyphicon-wrench"></span><div elem="title">&quot;do it yourself&quot; customization</div><div elem="text">Specify directly how build tools should be invoked on the command line.</div></div></div><div block="feature" class="section__feature"><div elem="content"><span elem="icon" class="glyphicon glyphicon-briefcase"></span><div elem="title">library of processing steps for your files</div><div elem="text">Diy comes with a library of processing steps already baked in.</div></div></div></div><div block="section"><div elem="hr"></div><div elem="paragraph" mod="width:large"><h1 id="example-es6">example - ES6</h1>
+<h2 id="concatenate-and-minify-javascript-files">concatenate and minify javascript files</h2>
+<p>Assume you have two files (<code>src/file1.js</code> and <code>src/file2.js</code>) that you want to 
+concatenate and minify into a single <code>_site/client.js</code> file. Here&#39;s how you&#39;d
+write a Diy program for this task:</p>
+<h2 id="diy-source-file">diy source file</h2>
+<pre><code class="lang-js">/* configure.js */
+
+var {
+  generateProject
+} = require(&quot;diy&quot;);
+
+generateProject(_ =&gt; {
+  _.collect(&quot;all&quot;, _ =&gt; {
+    _.toFile( &quot;_site/client.js&quot;, _ =&gt; {
+      _.minify( _ =&gt; {
+        _.concat( _ =&gt; {
+          _.copy(&quot;src/*.js&quot;)
+        })
+      })
+    })
+  })
+})
+</code></pre>
+<h2 id="description">description</h2>
+<p>Everything starts with the <code>generateProject</code> library function. You invoke it with 
+a closure that describes the final makefile <strong>targets</strong> (using <code>_.collect</code>). A target is just a name
+you give to a set of products you want to build. </p>
+<p><code>_.toFile</code> creates a named file whose contents are created as described by the closure passed as second parameter. 
+The closure (as it can be intuitively understood) minifies the concatenation of a copy of javascript files in <code>src/*.js</code>.</p>
+<p>To generate the makefile we use babel to get ES5:</p>
+<pre><code class="lang-bash">babel configure.js | node
+</code></pre>
+<p>And here&#39;s the <a href="demo/makefile">generated makefile</a>.</p>
+<p>The makefile comes with two default targets (<code>prepare</code> and <code>clean</code>) plus all the targets defined with <code>collect</code>:</p>
+<pre><code class="lang-bash">&gt; make prepare      # Creates destination directories
+&gt; make clean        # Removes all products
+&gt; make all          # Execute commands associated with `all`
+</code></pre>
+<p>Make provides a way to specify the maximum parallelism to be used for building targets:</p>
+<pre><code class="lang-bash">&gt; make all -j 8     # Build all, execute up to 8 concurrent commands.
+</code></pre>
+<h1 id="customization">customization</h1>
+<p>What about your favorite css/js preprocessor and other minifiers?</p>
+<p>Here&#39;s how you would define a new processing step to compile javascript with a
+bunch of browserify plugins: </p>
+<pre><code class="lang-js">_.browserify = (src, ...deps) =&gt; {
+  var command = (_) =&gt; `./node_modules/.bin/browserify -t liveify -t node-lessify  ${_.source} -o ${_.product}`
+  var product = (_) =&gt; `${_.source.replace(/\..*/, &#39;.bfd.js&#39;)}`
+  _.compileFiles(...([ command, product, src ].concat(deps)))
+}
+</code></pre>
+<p><code>_.compileFiles</code> is a built in function to easily construct new processing steps. Its first
+two parameters are two templates: </p>
+<ol>
+<li>a function to build the command line </li>
+<li>a function to build the product name</li>
+</ol>
+<p>The remaining parameters are <code>src</code> (glob for the source files) and the source dependencies.</p>
+<pre><code class="lang-js">generateProject(_ =&gt; {
+
+  _.browserify = (dir, ...deps) =&gt; {
+    var command = (_) =&gt; `./node_modules/.bin/browserify -t liveify -t node-lessify  ${_.source} -o ${_.product}`
+    var product = (_) =&gt; `${_.source.replace(/\..*/, &#39;.bfd.js&#39;)}`
+    _.compileFiles(...([ command, product, dir ].concat(deps)))
+  }
+
+  _.collect(&quot;all&quot;, _ =&gt; {
+    _.toFile( &quot;_site/client.js&quot;, _ =&gt; {
+        _.browserify(&quot;src/index.ls&quot;, &quot;src/**/*.less&quot;, &quot;src/**/*.ls&quot;)
+    })
+  })
+}
+</code></pre>
+<h1 id="serving-and-livereloading">serving and livereloading</h1>
+<p>Serving static files from a directory and livereloading upon a change of a product is supported through <code>pm2</code> and <code>tiny-lr</code>. We can
+create two make targets (<code>start</code> and <code>stop</code>) that take care of starting and stopping both services:</p>
+<pre><code class="lang-js">generateProject(_ =&gt; { 
+
+    /* ... */
+
+  _.collect(&quot;start&quot;, _ =&gt; {
+    _.startWatch(&quot;_site/**/*&quot;)
+    _.startServe(&quot;_site&quot;)
+  })
+
+  _.collect(&quot;stop&quot;, _ =&gt; {
+    _.stopWatch()
+    _.stopServe()
+  })
+
+    /* ... */
+})
+</code></pre>
+<p><code>_.startWatch(glob)</code> is a built-in step that launches a tiny-lr instance that triggers a reload upon change on files matching the glob. 
+<code>_.startServe(root,port)</code> serves files from the specified root and port.</p>
+</div></div></div><footer></footer><script type="text/javascript">document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js"></' + 'script>')
+</script><!-- if IEscript(type="text/javascript", src="js/placeholder.js")--></body></html>

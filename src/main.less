@@ -4,6 +4,11 @@
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans+Mono);
 @import url(http://fonts.googleapis.com/css?family=Lobster);
 
+@red: #c0392b;
+@blue: #34495e;
+
+
+
 body {
   margin: 0;
   font-family: 'Lato', sans-serif;
@@ -14,8 +19,13 @@ body {
   max-width: @screen-desktop;
 }
 
-@red: #c0392b;
-@blue: #34495e;
+.page-footer {
+  .container-fixed();
+  background: @blue;
+  text-align: center;
+}
+
+
 
 @import "./section.less";
 @import "./feature.less";

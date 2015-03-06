@@ -42,6 +42,10 @@ generateProject(_ => {
       _.copy("example/makefile")
     })
 
+    _.mirrorTo("_site", { strip: 'src/' }, _ => {
+      _.copy("src/images/*")
+    })
+
     _.toFile( "_site/client.js", _ => {
         _.browserify("src/index.ls", "src/**/*.less", "src/**/*.ls")
     })

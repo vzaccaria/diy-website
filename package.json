@@ -19,6 +19,7 @@
     "cssify": "^0.6.0",
     "debug": "^2.1.2",
     "highlight.js": "^8.4.0",
+    "indiesocial": "^1.0.0",
     "jQuery": "^1.7.4",
     "jade": "^1.9.2",
     "jquery": "^2.1.3",

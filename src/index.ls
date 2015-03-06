@@ -6,6 +6,7 @@ debug "Require finished"
 
 setupStyles = ->
   bootstrap = require('./main.less')
+  fontello  = require('./fontello.css')
 
 setupHighlight = ->
   github        = require('./styles/github.css')
@@ -14,6 +15,11 @@ setupHighlight = ->
       debug "Highlighting code"
       hljs.initHighlighting!
 
-setupStyles!
 
+
+setupShareButtons = ->
+  require('indiesocial')
+
+setupStyles!
 setupHighlight!
+setupShareButtons!

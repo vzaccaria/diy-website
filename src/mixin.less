@@ -1,0 +1,13 @@
+@import (reference) './less/variables.less';
+
+.on-mobile(@rules) {
+        @media (max-width: @screen-sm) {
+                @rules();
+        }
+}
+
+.on-desktop(@rules) {
+        @media (min-width: @screen-sm) {
+                @rules();
+        }
+}

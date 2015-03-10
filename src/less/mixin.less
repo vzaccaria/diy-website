@@ -1,0 +1,75 @@
+@import (reference) './bootstrap/variables.less';
+
+
+.on-mobile(@rules) {
+        @media (max-width: @screen-sm) {
+                @rules();
+        }
+}
+
+.on-desktop(@rules) {
+        @media (min-width: @screen-sm) {
+                @rules();
+        }
+}
+
+.link-style(@color: @black) {
+  & a {
+    &:link {
+      color: @color;
+    }
+    &:visited {
+      color: @color;
+    }
+  }
+}
+
+.code-style() {
+  & pre,
+  & code {
+    font-size:1rem;
+    font-family: 'Droid Sans Mono', monospace;
+  }
+}
+
+.common-title-style(@color: @black) {
+  display: block;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+  font-style: none;
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 2rem;
+  text-align: center;
+  letter-spacing: .3rem;
+  color: @color;
+}
+
+.common-subtitle-style() {
+  font-variant: small-caps;
+  letter-spacing: .3rem;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.inverted-text-style() {
+  line-height: 1.7rem;
+  font-size: 1.2rem;
+  .link-style(white)
+}
+
+.common-text-style() {
+  line-height: 1.7rem;
+  font-size: 1.2rem;
+
+  .link-style();
+  .code-style();
+
+  & h1 {
+    .common-title-style();
+  }
+
+  & h2 {
+    .common-subtitle-style();
+  }
+}

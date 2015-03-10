@@ -4,28 +4,36 @@
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans+Mono);
 @import url(http://fonts.googleapis.com/css?family=Lobster);
 
+
 @red: #c0392b;
 @blue: #34495e;
+@black: #111111;
 
-
+@import "./mixin.less";
 
 body {
   margin: 0;
   font-family: 'Lato', sans-serif;
+  .common-text-style();
 }
 
-.main-page {
+.page {
   .container-fixed();
   max-width: @screen-desktop;
 }
 
-.page-footer {
+.footer {
   .container-fixed();
   background: @blue;
   text-align: center;
+  margin-top: 4rem;
+  padding-bottom: 4rem;
+  .inverted-text-style();
 }
 
 
 
-@import "./section.less";
+@import "./intro.less";
+@import "./content.less";
+@import "./paragraph.less";
 @import "./feature.less";

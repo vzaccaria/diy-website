@@ -5,11 +5,11 @@ global.$      = global.jQuery
 debug "Require finished"
 
 setupStyles = ->
-  bootstrap = require('./main.less')
-  fontello  = require('./fontello.css')
+  bootstrap = require('../less/main.less')
+  fontello  = require('../less/fontello.css')
 
 setupHighlight = ->
-  github        = require('./styles/github.css')
+  github        = require('../less/styles/github.css')
   global.hljs   = require "highlight.js"
   global.$(document).ready ->
       debug "Highlighting code"

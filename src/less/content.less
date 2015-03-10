@@ -1,0 +1,25 @@
+@import  (reference) "./bootstrap/bootstrap.less";
+@import  (reference) "./bootstrap/grid.less";
+@import (reference) "./mixin.less";
+
+.content {
+  .make-row();
+  .box-sizing(border-box);
+
+  &__position_footer {
+    
+  }
+}
+
+.content__title.content__title_role_feature-list-title {
+  display: block;
+  .common-title-style();
+}
+
+.hr {
+  .make-md-column(12);
+  .box-sizing(border-box);
+  height: 1rem;
+  border-bottom: #ccc 1px solid;
+  margin-top: 2rem;
+}

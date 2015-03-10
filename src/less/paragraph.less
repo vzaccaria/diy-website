@@ -1,0 +1,38 @@
+@import  (reference) "./bootstrap/bootstrap.less";
+@import  (reference) "./bootstrap/grid.less";
+@import  (reference) "./mixin.less";
+
+.paragraph {
+  .make-md-column(4);
+  .box-sizing(border-box);
+
+  &_position_intro,
+  &_position_features {
+    .make-md-column(4);
+    .make-md-column-offset(4);
+    & h1,
+    & h2 {
+      display: block;
+    }
+  }
+
+  &_position_footer{
+    .make-md-column(6);
+    .make-md-column-offset(3);
+  }
+
+  &_role_share{
+    .make-md-column(6);
+    .make-md-column-offset(3);
+    padding-bottom: 3rem;
+  }
+
+  &_width_large {
+    .make-md-column(10);
+    .make-md-column-offset(1);
+  }
+
+  &_width_huge {
+    .make-md-column(12);
+  }
+}

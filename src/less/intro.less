@@ -1,0 +1,55 @@
+@import  (reference) "./bootstrap/bootstrap.less";
+@import  (reference) "./bootstrap/grid.less";
+@import  (reference) "./mixin.less";
+
+.intro {
+
+  .make-row();
+  margin-top: 2rem;
+
+  &__logo {
+    .box-sizing(border-box);
+
+    .on-mobile({
+      .make-xs-column(3);
+      .make-xs-column-offset(4.5);
+      });
+
+    .on-desktop({
+      .make-xs-column-offset(4.5);
+      .make-xs-column(3);
+      });
+
+    margin-bottom: 2rem;
+  }
+
+
+
+  &__title {
+    .make-xs-column(12);
+    .box-sizing(border-box);
+    text-align: center;
+    font-size: 2.5rem;
+    font-family: 'Lobster', serif;
+    color: @black;
+  }
+
+  &__subtitle {
+    .make-xs-column(12);
+    .box-sizing(border-box);
+    text-align: center;
+    padding-top: 2rem;
+    .on-desktop({
+      font-size: 2.5rem;
+      font-weight: 100;
+      line-height: 2.3rem;
+    });
+    .on-mobile({
+      font-size: 1.1rem;
+      font-weight: 100;
+      line-height: 2.3rem;
+    });
+
+    color: @black;
+  }
+}

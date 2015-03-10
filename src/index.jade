@@ -1,5 +1,5 @@
 mixin feature(title, icon, text)
-  .section__feature(block='feature')
+  div(block='feature')
     div(elem='content')
       span(elem='icon', class='glyphicon glyphicon-#{icon}')
       div(elem='title') #{title}
@@ -22,43 +22,43 @@ html
         src="https://camo.githubusercontent.com/82b228a3648bf44fc1163ef44c62fcc60081495e/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67",
         alt="Fork me on GitHub", data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png") 
 
-    header(block='main-page')
-      div(block='section', mod='role:main')
-        img(elem='page-icon', src='images/drill.png')
-        div(elem='page-title') Diy
-        div(elem='page-subtitle') Javascript that compiles to a Makefile
-      div(block='section')
-        div(elem='paragraph', mod='role:action')
+    div(block='page')
+      div(block='intro')
+        img(elem='logo', src='images/drill.png')
+        div(elem='title') Diy
+        div(elem='subtitle') Javascript that compiles to a Makefile
+        div(block='paragraph', mod='position:intro')
           :markdown
-            # install 
+            # [read the docs](docs/index.html)
             
-            ```shell
-            npm install diy 
-            ```
-            
-        div(elem='hr')
+        div(block='hr')
 
-      div(block='section')
-        div(elem='paragraph', mod='width:large')
-          h1 features
+      div(block='content')
+        div(elem="title", mod="role:feature-list-title") features
         +feature('build systems dsl',                          'pencil',    'Diy is a build language embedded in Javascript. It allows to generate Make files for your web site or web app.')
         +feature('tailored for web',                           'flash',     'All classic transforms are supported such as reductions (e.g., concatenation), post-processing (e.g., minification) and so on..')
         +feature('parallel builds',                            'tasks',     'Enables Make to exploit available parallelism.')
         +feature('incremental builds',                         'forward',   'Compile only what has changed.')
         +feature('"do it yourself" customization',             'wrench',    'Specify directly how build tools should be invoked on the command line.')
-        +feature('library of transforms', 'briefcase',  'Diy comes with a library of transforms already baked in.')
+        +feature('library of transforms',                      'briefcase',  'Diy comes with a library of transforms already baked in.')
           
       
-      div(block='section')
-        div(elem='hr')
-        div(elem='paragraph', mod='width:large')
+      div(block='content')
+        div(block='hr')
+        div(block='paragraph', mod='width:large')
             :markdown
-              # example - ES6
+              # install 
+              
+              ```shell
+              npm install diy 
+              ```
+              
+              # example 
               ## concatenate and minify javascript files
 
               Assume you have two files (`src/file1.js` and `src/file2.js`) that you want to 
               concatenate and minify into a single `_site/client.js` file. Here's how you'd
-              write a Diy program for this task:
+              write a Diy (ES6) program for this task:
             
               ## diy source file
               
@@ -185,13 +185,13 @@ html
               `_.startServe(root,port)` serves files from the specified root and port.
 
   
-    footer(block='page-footer')
-      div(block='section', mod='role:footer') 
-        div(elem='paragraph', mod='role:footer')
+    footer(block='footer')
+      div(block='content', mod='position:footer') 
+        div(block='paragraph', mod='position:footer')
           :markdown
-            # [© vittorio zaccaria, 2014](http://www.vittoriozaccaria.net/v2/)
+            ## [© vittorio zaccaria, 2015](http://www.vittoriozaccaria.net/v2/)
       
-        div(elem='paragraph', mod='role:footer')
+        div(block='paragraph', mod='role:share')
           #indiesocial-init(data-indieSocialServices="all", 
                             data-addFontelloIcon="true", 
                             data-URL="https://github.com/vzaccaria/diy", 

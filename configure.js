@@ -25,6 +25,7 @@ generateProject(_ => {
     _.processFiles(command, product, body)
   }
 
+
   _.collect("all", _ => {
 
     _.toFile( "_site/index.html", _ => {
@@ -47,8 +48,10 @@ generateProject(_ => {
     })
 
     _.toFile( "_site/client.js", _ => {
-        _.browserify("src/index.ls", "src/**/*.less", "src/**/*.ls")
+        _.browserify("src/js/index.ls", "src/**/*.less", "src/**/*.ls")
     })
+
+    _.cmd("sphinx-build -b html docs _site/docs", "docs/**/*.rst")
   })
 
   _.collect("start", _ => {

@@ -1,7 +1,8 @@
-docs
+./docs/_build/**/*
 src/index.js
 _site
 bemified-8prb.html
 src/index.bfd.js
 src/index.html
 makefile
+docs/_build

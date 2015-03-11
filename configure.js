@@ -54,6 +54,12 @@ generateProject(_ => {
     _.cmd("sphinx-build -b html docs _site/docs", "docs/**/*.rst")
   })
 
+  _.collectSeq("up", _ => {
+    _.cmd("make clean")
+    _.cmd("rm -rf _site")
+    _.cmd("./node_modules/.bin/babel ./configure.js | node")
+  })
+
   _.collect("start", _ => {
     _.startWatch("_site/**/*")
     _.startServe("_site")

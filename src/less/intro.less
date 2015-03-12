@@ -1,6 +1,7 @@
 @import  (reference) "./bootstrap/bootstrap.less";
 @import  (reference) "./bootstrap/grid.less";
 @import  (reference) "./mixin.less";
+@import  (reference) "./est/src/all.less";
 
 .intro {
 
@@ -30,6 +31,7 @@
     font-style: none;
     font-variant: small-caps;
     font-weight: bold;
+    .debossed-text(white, lighten(black,40%));
   }
 
 
@@ -41,6 +43,7 @@
     font-size: 2.5rem;
     font-family: 'Lobster', serif;
     color: @black;
+    .debossed-text(white, lighten(black,40%));
   }
 
   &__subtitle {
@@ -58,7 +61,6 @@
       font-weight: 100;
       line-height: 2.3rem;
     });
-
     color: @black;
   }
 }

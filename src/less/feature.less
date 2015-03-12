@@ -1,6 +1,7 @@
 @import  (reference) "./bootstrap/bootstrap.less";
 @import  (reference) "./bootstrap/grid.less";
 @import  "./bootstrap/glyphicons.less";
+@import  (reference) "./est/src/all.less";
 
 .feature {
   .box-sizing(border-box);
@@ -18,7 +19,7 @@
     .box-sizing(border-box);
     text-align: center;
     font-size: 3rem;
-    color: #34495e;
+    .debossed-text(white, lighten(black,70%));
   }
 
   &__title {

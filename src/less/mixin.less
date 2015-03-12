@@ -1,5 +1,5 @@
 @import (reference) './bootstrap/variables.less';
-
+@import  (reference) "./est/src/all.less";
 
 .on-mobile(@rules) {
         @media (max-width: @screen-sm) {
@@ -43,6 +43,7 @@
   text-align: center;
   letter-spacing: .3rem;
   color: @color;
+  .debossed-text(white, lighten(black,70%));
 }
 
 .common-subtitle-style() {

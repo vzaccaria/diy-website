@@ -2,6 +2,10 @@
 API
 =====
 
+.. note::
+
+   All the examples are in Javascript ES6; they use template strings,
+   arrow functions and rest and spread parameters.
 
 .. js:function:: generateProject(block)
 
@@ -29,6 +33,28 @@ API
 
       _.collect("all", _ => {
         _.collect("build1", _ => {
+          _.toFile( "_site/client1.js", _ => { .. })
+          })
+        _.collect("build2", _ => {
+          _.toFile( "_site/client2.js", _ => { .. })
+          })
+        })
+      })
+
+.. js:function:: collectSeq(name, block)
+
+  :param string name: name to be assigned to targets declared in the block
+  :param function block: function describing the construction of a set of targets
+
+  Similar to :js:func:`collect`. However, subtargets are executed serially.
+  This example creates an ``all`` phony target that will invoke first ``build1`` then ``build2``.
+
+  .. code-block:: javascript
+
+    generateProject(_ => {
+
+      _.collectSeq("all", _ => {
+        _.collect("build1", _ => {
           _.toFile( "_site/client1.js", _ => { ... })
           })
         _.collect("build2", _ => {
@@ -36,3 +62,42 @@ API
           })
         })
       })
+
+.. js:function:: compileFiles(cmd, product, src, deps..)
+
+  :param function cmd: function that generates the command string
+  :param function product: function that generates the name of the compiled file
+  :param string src: glob representing the source files to be considered
+  :param string deps: (one or more) files on which recompilation is dependent on (a part from src)
+
+  This function is the essential building block for declaring transforms for files that require
+  compilation. It basically iterates over all the files specified by the glob ``src``, emitting
+  the compilation commands through the string generation function ``cmd``. ``cmd`` receives an object
+  with ``source`` and ``product`` properties. ``source`` corresponds to the current source being compiled
+  while ``product`` is the string generated with the ``product`` function. ``product`` receives an object
+  with only a ``source`` property.
+
+  You don't typically use this function alone. In fact, you build arbitrary compile commands from it. For
+  example, here we extend the set of available transforms in Diy by introducing a browserify transform
+  that we use later on.
+
+
+
+
+  .. code-block:: coffeescript
+     :emphasize-lines: 3-7
+
+     generateProject(_ => {
+
+        _.browserify = (dir, ...deps) => {
+          var command = (_) => `./node_modules/.bin/browserify -t liveify -t node-lessify  ${_.source} -o ${_.product}`
+          var product = (_) => `${_.source.replace(/\..*/, '.bfd.js')}`
+          _.compileFiles(...([ command, product, dir ].concat(deps)))
+        }
+
+        _.collect("all", _ => {
+          _.toFile( "_site/client.js", _ => {
+              _.browserify("src/index.ls", "src/**/*.less", "src/**/*.ls")
+          })
+        })
+      }

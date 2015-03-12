@@ -6,36 +6,18 @@
 Welcome to Diy's documentation!
 ===============================
 
-.. js:function:: $.getJSON(href, callback[, errback])
+Diy is a build language embedded in Javascript. It allows to generate Make files for your web site or web app.
 
-   :param string href: An URI to the location of the resource.
-   :param callback: Gets called with the object.
-   :param errback:
-       Gets called in case the request fails. And a lot of other
-       text so we need multiple lines.
-   :throws SomeError: For whatever reason in that case.
-   :returns: Something.
+It is meant to provide a quick and easy way to create highly customized build scripts that exploit the efficiency of Make.
 
-.. WARNING::
-  This is a sample warning :js:func:`$.getJSON`
 
-.. highlight:: c
-
-.. code-block:: c
-
-    void main()
-    {
-
-    }
-
-Contents:
 
 .. toctree::
-   :maxdepth: 2
 
    introduction
    example
    api
+
 
 
 

@@ -1,13 +1,18 @@
 
-Example
+Usage
 ================
+
+.. note::
+
+   All the examples are in Javascript ES6; they use template strings,
+   arrow functions and rest and spread parameters.
 
 In this example, we will create a makefile to concatenate and minify javascript files.
 Assume you have two files (``src/file1.js`` and ``src/file2.js``) that you want to
 concatenate and minify into a single ``_site/client.js`` file. Here's how you'd
 write a Diy program for this task:
 
-.. code-block:: javascript
+.. code-block:: coffeescript
 
   /* configure.js */
 
@@ -26,6 +31,30 @@ write a Diy program for this task:
       })
     })
   })
+
+.. note::
+
+   All nested blocks are represented by arrow functions that receive
+   a context parameter (represented as ``_``). The context contains all the methods
+   to build the final makefile:
+
+   .. code-block:: coffeescript
+
+      _ => {
+        _.collect("all", ..)
+      }
+
+   ``this`` is bound to the context as well, so in Coffeescript you could write:
+
+   .. code-block:: coffeescript
+
+      () => {
+        @collect("all", ..)
+      }
+
+
+   You can customize the context to include your own methods or modules. (see :js:func:`addPack`)
+
 
 
 Description
@@ -73,7 +102,7 @@ What about your favorite css/js preprocessor and other minifiers?
 Here's how you would define a new processing step to compile javascript with a
 bunch of browserify plugins:
 
-.. code-block:: javascript
+.. code-block:: coffeescript
 
   _.browserify = (src, ...deps) => {
     var command = (_) => `./node_modules/.bin/browserify -t liveify -t node-lessify  ${_.source} -o ${_.product}`
@@ -89,7 +118,7 @@ two parameters are two templates:
 
 The remaining parameters are ``src`` (glob for the source files) and the source dependencies.
 
-.. code-block:: javascript
+.. code-block:: coffeescript
 
   generateProject(_ => {
 
@@ -109,10 +138,10 @@ The remaining parameters are ``src`` (glob for the source files) and the source 
 Serving and livereloading
 *************************
 
-Serving static files from a directory and livereloading upon a change of a product is supported through ``pm2`` and ``tiny-lr``. We can
+Serving static files from a directory and live-reloading upon a change of a product is supported through ``pm2`` and ``tiny-lr``. We can
 create two make targets (``start`` and ``stop``) that take care of starting and stopping both services:
 
-.. code-block:: javascript
+.. code-block:: coffeescript
 
   generateProject(_ => {
 

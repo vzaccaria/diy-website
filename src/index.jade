@@ -27,13 +27,11 @@ html
         img(elem='logo', src='images/drill.png')
         div(elem='title') Diy
         div(elem='subtitle') Javascript that compiles to a Makefile
-        div(block='paragraph', mod='position:intro')
-          :markdown
-            # [read the docs](docs/index.html)
+        a(elem='docslink', href="docs/index.html") read the docs
             
-        div(block='hr')
 
       div(block='content')
+        div(block='hr')
         div(elem="title", mod="role:feature-list-title") features
         +feature('build systems dsl',                          'pencil',    'Diy is a build language embedded in Javascript. It allows to generate Make files for your web site or web app.')
         +feature('tailored for web',                           'flash',     'All classic transforms are supported such as reductions (e.g., concatenation), post-processing (e.g., minification) and so on..')

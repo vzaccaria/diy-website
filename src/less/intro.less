@@ -3,6 +3,12 @@
 @import  (reference) "./mixin.less";
 @import  (reference) "./est/src/all.less";
 
+.github {
+  &__img {
+    max-width: 20%;
+  }
+}
+
 .intro {
 
   .make-row();
@@ -31,9 +37,10 @@
     font-style: none;
     font-variant: small-caps;
     font-weight: bold;
+    margin-top: 5rem;
+    margin-bottom: 5rem;
     .debossed-text(white, lighten(black,40%));
   }
-
 
 
   &__title {

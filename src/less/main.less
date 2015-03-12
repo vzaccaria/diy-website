@@ -8,6 +8,8 @@
 @red: #c0392b;
 @blue: #34495e;
 @black: #111111;
+@white: fade(white, 50%);
+@fbc: lighten(@blue, 20%);
 
 @import "./mixin.less";
 
@@ -24,10 +26,14 @@ body {
 
 .footer {
   .container-fixed();
-  background: @blue;
+  background: @fbc;
   text-align: center;
   margin-top: 4rem;
   padding-bottom: 4rem;
+  // .disable-link-style();
+  font-size: 2rem;
+  // .link-style(@fbc);
+  // .debossed-text(@fbc);
   .inverted-text-style();
 }
 

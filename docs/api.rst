@@ -101,3 +101,30 @@ API
           })
         })
       }
+
+.. js:function:: toFile(filename, block)
+
+  :param string filename: name of the file that will be created with the results of the block
+  :param function block: function describing the construction of a set of targets
+
+  If the block passed as a second parameter produces a single file, i.e., it is
+  the result of a concatenation (or other reduction), this command specifies
+  that the content should be written into the specified file.
+
+  Here we copy the result of browserify's into ``_site/client.js``:
+
+  .. code-block:: coffeescript
+     :emphasize-lines: 4
+
+     generateProject(_ => {
+
+        _.collect("all", _ => {
+          _.toFile( "_site/client.js", _ => {
+              _.browserify("src/index.ls", "src/**/*.less", "src/**/*.ls")
+          })
+        })
+      }
+  .. warning::
+
+    If the child block creates more than one file, the effect is unspecified
+    (at the moment).

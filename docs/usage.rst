@@ -66,6 +66,9 @@ you give to a set of products you want to build.
 :js:func:`toFile` creates a named file whose contents are created as described by the closure passed as second parameter.
 The closure (as it can be intuitively understood) minifies the concatenation of a copy of javascript files in ``src/*.js``.
 
+Minification is done through a built-in utility function (:js:func:`minify`). You can specify other processing strategies
+through :js:func:`processFiles`.
+
 
 
 To generate the makefile we use babel to get ES5 and run it with Node:

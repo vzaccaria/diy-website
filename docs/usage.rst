@@ -69,6 +69,9 @@ The closure (as it can be intuitively understood) minifies the concatenation of 
 Minification is done through a built-in utility function (:js:func:`minify`). You can specify other processing strategies
 through :js:func:`processFiles`.
 
+Concatenation is done through another utility function named :js:func:`concat`.
+You can specify other reduction strategies through :js:func:`reduceFiles`.
+
 
 
 To generate the makefile we use babel to get ES5 and run it with Node:

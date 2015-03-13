@@ -155,7 +155,9 @@ The utility section that comes after is just built above these primitives.
 
 
       .. code-block:: coffeescript
-         :emphasize-lines: 3-6,10
+         :emphasize-lines: 5-8,12
+
+         var uid = require('uid')
 
          generateProject(_ => {
 
@@ -183,6 +185,73 @@ The utility section that comes after is just built above these primitives.
 
             product = (_) => `minified-${uid(4)}.js`
 
+.. js:function:: reduceFiles(cmd, product, block)
+
+      :param function cmd: function that generates the command string
+      :param function product: function that generates the name of the compiled file
+      :param function block: function describing the construction of a set of targets
+
+      This function is the essential building block for declaring transforms that reduce a set of files
+      to a single file.
+      In this case, ``cmd`` receives an object with a ``sources`` and ``product`` properties.
+      ``sources`` is the array of filenames to be reduced, while product is the name of the final file.
+
+      You don't typically use this function alone. In fact, you build arbitrary reduction commands from it.
+      For example, here we extend the set of available reductions in Diy by introducing a concatenation
+      step through the command line utility ``cat``. We concatenate all the js files in directory ``src``:
+
+
+      .. code-block:: coffeescript
+         :emphasize-lines: 5-8,12
+
+         var uid = require('uid')
+
+         generateProject(_ => {
+
+            _.concat = (body) =>
+               command = (_)  => `cat ${_.sources.join(' ')} > ${_.product}`
+               product = (_)  => `concat-${uid(4)}.js`
+               _.reduceFiles(command, product, body)
+
+            _.collect("all", _ => {
+              _.toFile( "_site/client.js", _ => {
+                  _.concat( _ => {
+                    _.glob("src/*.js")
+                  })
+              })
+            })
+          }
+
+
+.. js:function:: glob(src)
+
+      :param string src: glob of files
+
+      As :js:func:`compileFiles`, but it does not compile anything. The products
+      of this step are just the files specified in the glob.
+
+      Here we concatenate all the js files already present in ``src``:
+
+      .. code-block:: coffeescript
+         :emphasize-lines: 13
+
+         var uid = require('uid')
+
+         generateProject(_ => {
+
+            _.concat = (body) =>
+               command = (_)  => `cat ${_.sources.join(' ')} > ${_.product}`
+               product = (_)  => `concat-${uid(4)}.js`
+               _.reduceFiles(command, product, body)
+
+            _.collect("all", _ => {
+              _.toFile( "_site/client.js", _ => {
+                  _.concat( _ => {
+                    _.glob("src/*.js")
+                  })
+              })
+            })
+          }
 
 Built in utility functions
 **************************
@@ -199,3 +268,17 @@ Built in utility functions
            command = (_) => `uglifyjs ${_.source} > ${_.product}`
            product = (_) => `minified-${uid(4)}.js`
            _.processFiles(command, product, block)
+
+-
+.. js:function:: concat(block)
+
+      :param function block: function describing the construction of a set of targets
+
+      Built-in javascript concatenation function. Defined as
+
+      .. code-block:: coffeescript
+
+        _.concat = (body) =>
+           command = (_)  => `cat ${_.sources.join(' ')} > ${_.product}`
+           product = (_)  => `concat-${uid(4)}.js`
+           _.reduceFiles(command, product, body)

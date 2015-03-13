@@ -48,7 +48,9 @@ generateProject(_ => {
     })
 
     _.toFile( "_site/client.js", _ => {
+      _.minify( _ => {
         _.browserify("src/js/index.ls", "src/**/*.less", "src/**/*.ls")
+      })
     })
 
     _.cmd("sphinx-build -b html docs _site/docs", "docs/**/*.rst")

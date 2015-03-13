@@ -15,7 +15,7 @@ It is meant to provide a quick and easy way to create highly customized build sc
 .. toctree::
 
    introduction
-   example
+   usage
    api
 
 

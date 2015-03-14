@@ -130,10 +130,20 @@ The utility section that comes after is just built above these primitives.
           })
         })
       }
-  .. warning::
 
-    If the child block creates more than one file, the effect is unspecified
-    (at the moment).
+  .. note::
+
+    If the child block creates more than one file, the effect is a concatenation.
+    For example here we concatenate a ``foo.js`` with the results of
+    browserify into ``_site/client.js``:
+
+    .. code-block:: coffeescript
+
+      _.toFile( "_site/client.js", _ => {
+          _.glob("src/foo.js")
+          _.browserify("src/index.ls", "src/**/*.less", "src/**/*.ls")
+      })
+
 
 .. js:function:: processFiles(cmd, product, block)
 

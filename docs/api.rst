@@ -263,6 +263,73 @@ The utility section that comes after is just built above these primitives.
             })
           }
 
+
+.. js:function:: mirrorTo(name, options, block)
+
+      :param string name: directory in which all the files should be mirrored
+      :param object options: option object
+      :param function block: function describing the construction of a set of targets
+
+      Copies all top-level targets built in ``block`` into directory ``name``. Relative paths are preserved.
+      A string can be stripped from filenames through ``object.strip``.
+
+      Assume you have two files, ``src/dir1/foo.js`` and ``src/dir2/bar.js``, then
+
+      .. code-block:: coffeescript
+
+         var uid = require('uid')
+
+         generateProject(_ => {
+            _.collect("all", _ => {
+              _.mirrorTo( "_site", _ => {
+                    _.glob("src/**/*.js")
+                  })
+              })
+            })
+          }
+
+      will copy those files in ``_site/src/dir1/foo.js`` and ``_site/src/dir2/bar.js``.
+
+      Using the ``strip`` option:
+
+      .. code-block:: coffeescript
+
+         var uid = require('uid')
+
+         generateProject(_ => {
+            _.collect("all", _ => {
+              _.mirrorTo( "_site", {strip: 'src'}, _ => {
+                    _.glob("src/**/*.js")
+                  })
+              })
+            })
+          }
+
+      will copy the same files in ``_site/dir1/foo.js`` and ``_site/dir2/bar.js``.
+
+.. js:function:: cmd(command)
+
+  :param string command: command to be executed
+
+  Just execute the command specified. Depending on the type
+  of ``collect`` used, commands are executed serially or
+  in parallel.
+
+  Example:
+
+  .. code-block:: coffeescript
+
+    generateProject(_ => {
+      _.collectSeq("update", _ => {
+          _.cmd("make clean")
+          _.cmd("rm -rf _site")
+          _.cmd("./node_modules/.bin/babel ./configure.js | node")
+          })
+    })
+
+
+
+
 Built in utility functions
 **************************
 

@@ -19,6 +19,12 @@ generateProject(_ => {
     _.compileFiles(...([ command, product, dir ].concat(deps)))
   }
 
+  _.replace = (tag, file, body) => {
+    var command = (_) => `pandoc ${file} > desc-temp.html && cat ${_.source} | stupid-replace '{{${tag}}}' -f desc-temp.html > ${_.product}`
+    var product = (_) => `replaced-${uid(4)}`
+    _.processFiles(command, product, body)
+  }
+
   _.bemify = (body) => {
     var command = (_) => `./node_modules/.bin/beml-cli < ${_.source} > ${_.product}`
     var product = (_) => `bemified-${uid(4)}.html`
@@ -29,8 +35,10 @@ generateProject(_ => {
   _.collect("all", _ => {
 
     _.toFile( "_site/index.html", _ => {
-      _.bemify( _ => {
-        _.jadeify("src/index.jade")
+      _.replace("manual", "../diy/description.md", _ => {
+        _.bemify( _ => {
+          _.jadeify("src/index.jade")
+        })
       })
     })
 
@@ -56,7 +64,7 @@ generateProject(_ => {
     _.cmd("sphinx-build -b html docs _site/docs", "docs/**/*.rst")
   })
 
-  _.collectSeq("up", _ => {
+  _.collectSeq("update", _ => {
     _.cmd("make clean")
     _.cmd("rm -rf _site")
     _.cmd("./node_modules/.bin/babel ./configure.js | node")

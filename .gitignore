@@ -7,3 +7,4 @@ src/index.bfd.js
 src/index.html
 makefile
 docs/_build
+*.js

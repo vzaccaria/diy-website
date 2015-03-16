@@ -359,3 +359,52 @@ Built in utility functions
            command = (_)  => `cat ${_.sources.join(' ')} > ${_.product}`
            product = (_)  => `concat-${uid(4)}.js`
            _.reduceFiles(command, product, body)
+
+.. js:function:: startWatch(glob)
+
+      :param string glob: glob of files to watch
+
+      Starts a `livereload <http://livereload.com/>`_ server (through `tiny-lr <https://github.com/mklabs/tiny-lr>`_) and watches for changes
+      all the files specified in the glob. On change, the livereload server is notified.
+      This command does not start the static web server (see :js:func:`startServe`).
+
+      Usage:
+
+      .. code-block:: coffeescript
+
+        _.collect("start", _ => {
+          _.startWatch("_site/**/*")
+        })
+
+
+
+      And then, on the command line:
+
+      .. code-block:: bash
+
+        > make start
+        /Users/zaccaria/development/github/diy/lib/packs/../../node_modules/.bin/pm2 start /Users/zaccaria/development/github/diy/lib/packs/livereload.js -- '_site/**/*'
+        [PM2] Spawning PM2 daemon
+        [PM2] PM2 Successfully daemonized
+        [PM2] Process /Users/zaccaria/development/github/diy/lib/packs/livereload.js launched
+
+
+
+.. js:function:: stopWatch()
+
+
+      Stops the LiveReload server.
+
+
+.. js:function:: startServe(root, port)
+
+      :param string root: root of the static web server
+      :param number port: localhost port (default 4000)
+
+      Serve pages from root at the specified port. Pages are served through
+      `connect-livereload <https://github.com/intesso/connect-livereload>`_ so
+      you don't need to add any additional ``<script>`` tag for LiveReload.
+
+.. js:function:: stopServe()
+
+      Stops the static web server.

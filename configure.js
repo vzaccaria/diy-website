@@ -10,13 +10,13 @@ generateProject(_ => {
   _.browserify = (dir, ...deps) => {
     var command = (_) => `./node_modules/.bin/browserify -t liveify -t node-lessify  ${_.source} -o ${_.product}`
     var product = (_) => `${_.source.replace(/\..*/, '.bfd.js')}`
-    _.compileFiles(...([ command, product, dir ].concat(deps)))
+    _.compileFiles(...([command, product, dir].concat(deps)))
   }
 
   _.jadeify = (dir, ...deps) => {
     var command = (_) => `./node_modules/.bin/jade ${_.source}`
     var product = (_) => `${_.source.replace(/\..*/, '.html')}`
-    _.compileFiles(...([ command, product, dir ].concat(deps)))
+    _.compileFiles(...([command, product, dir].concat(deps)))
   }
 
   _.replace = (tag, file, body) => {
@@ -32,37 +32,47 @@ generateProject(_ => {
   }
 
 
-  _.collect("all", _ => {
+  _.collectSeq("deploy", _ => {
+    _.collect("all", _ => {
 
-    _.toFile( "_site/index.html", _ => {
-      _.replace("manual", "../diy/description.md", _ => {
-        _.bemify( _ => {
-          _.jadeify("src/index.jade")
+      _.toFile("_site/index.html", _ => {
+        _.replace("manual", "../diy/description.md", _ => {
+          _.bemify(_ => {
+            _.jadeify("src/index.jade")
+          })
         })
       })
-    })
 
-    _.mirrorTo("_site/fonts", { strip: 'src/fonts/' }, _ => {
-      _.copy("src/fonts/*.{eot,woff,woff2,ttf,svg}")
-    })
-
-    _.mirrorTo("_site/demo", { strip: 'example/' }, _ => {
-      _.copy("example/configure.js")
-      _.copy("example/makefile")
-    })
-
-    _.mirrorTo("_site", { strip: 'src/' }, _ => {
-      _.copy("src/images/*")
-    })
-
-    _.toFile( "_site/client.js", _ => {
-      _.minify( _ => {
-        _.browserify("src/js/index.ls", "src/**/*.less", "src/**/*.ls")
+      _.mirrorTo("_site/fonts", {
+        strip: 'src/fonts/'
+      }, _ => {
+        _.copy("src/fonts/*.{eot,woff,woff2,ttf,svg}")
       })
-    })
 
-    _.cmd("sphinx-build -b html docs _site/docs", "docs/**/*.rst")
+      _.mirrorTo("_site/demo", {
+        strip: 'example/'
+      }, _ => {
+        _.copy("example/configure.js")
+        _.copy("example/makefile")
+      })
+
+      _.mirrorTo("_site", {
+        strip: 'src/'
+      }, _ => {
+        _.copy("src/images/*")
+      })
+
+      _.toFile("_site/client.js", _ => {
+        _.minify(_ => {
+          _.browserify("src/js/index.ls", "src/**/*.less", "src/**/*.ls")
+        })
+      })
+
+      _.cmd("sphinx-build -b html docs _site/docs", "docs/**/*.rst")
+    })
+    _.cmd("blog-ftp-cli -l _site -r /diy")
   })
+
 
   _.collectSeq("update", _ => {
     _.cmd("make clean")

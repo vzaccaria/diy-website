@@ -165,5 +165,5 @@ create two make targets (``start`` and ``stop``) that take care of starting and 
       /* ... */
   })
 
-:js:func:`startWatch(glob)` is a built-in step that launches a tiny-lr instance that triggers a reload upon change on files matching the glob.
-:js:func:`startServe(root,port)` serves files from the specified root and port.
+:js:func:`startWatch` is a built-in step that launches a tiny-lr instance that triggers a reload upon change on files matching the glob.
+:js:func:`startServe` serves files from the specified root and port.

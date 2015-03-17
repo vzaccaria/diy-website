@@ -328,6 +328,29 @@ The utility section that comes after is just built above these primitives.
     })
 
 
+.. js:function:: addPack(module)
+
+      :param object module: object whose methods should be added to the default context
+
+      This function is to extend the available Diy functions with your own plugins (i.e., mixin).
+
+      Example:
+
+      .. code-block:: coffeescript
+
+        _my_module = (_) => {
+          foo: (string) => {
+            ..
+          }
+        }
+
+        generateProject(_ => {
+          _.addPack(_my_module(_))
+          _.collectSeq("update", _ => {
+              _.foo("bar")
+              })
+        })
+
 
 
 Built in utility functions

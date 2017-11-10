@@ -70,7 +70,7 @@ generateProject(_ => {
 
       _.cmd("sphinx-build -b html docs _site/docs", "docs/**/*.rst")
     })
-    _.cmd("blog-ftp-cli -l _site -r /diy")
+    _.cmd("blog-ftp-cli -t -l _site -r /diy")
   })
 
 
